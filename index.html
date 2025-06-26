@@ -1,182 +1,458 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tamir Ustası: Ev tamiratı, elektrik, su tesisatı ve dekorasyonda cesur ve modern çözümler. Enerjik ve yenilikçi hizmet için bizimle iletişime geçin.">
-    <meta name="keywords" content="ev tamiratı, elektrik tesisatı, su tesisatı, boya, dekorasyon, modern hizmet, tamirat">
-    <meta name="author" content="Tamir Ustası">
-    <title>Tamir Ustası - Cesur Ev Çözümleri</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">Tamir Ustası</div>
-            <ul class="nav-links">
-                <li><a href="#home">Anasayfa</a></li>
-                <li><a href="#about">Hakkımızda</a></li>
-                <li><a href="#services">Hizmetler</a></li>
-                <li><a href="#testimonials">Referanslar</a></li>
-                <li><a href="#contact">İletişim</a></li>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Omnifood is a premium food delivery service with the mission to bring affordable and healty meals to as many people as possible.">
+        
+        <link rel="stylesheet" type="text/css" href="vendors/css/normalize.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/ionicons.min.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/animate.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/style.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/queries.css">
+        <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,300italic' rel='stylesheet' type='text/css'>
+        <title>Omnifood</title>
+        
+        <link rel="apple-touch-icon" sizes="57x57" href="/resources/favicons/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/resources/favicons/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/resources/favicons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/resources/favicons/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/resources/favicons/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/resources/favicons/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/resources/favicons/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/resources/favicons/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/resources/favicons/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="/resources/favicons/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/resources/favicons/favicon-194x194.png" sizes="194x194">
+        <link rel="icon" type="image/png" href="/resources/favicons/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="/resources/favicons/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="/resources/favicons/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="/resources/favicons/manifest.json">
+        <link rel="shortcut icon" href="/resources/favicons/favicon.ico">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-TileImage" content="/resources/favicons/mstile-144x144.png">
+        <meta name="msapplication-config" content="/resources/favicons/browserconfig.xml">
+        <meta name="theme-color" content="#ffffff">
+        
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div class="row">
+                    <img src="resources/img/logo-white.png" alt="Omnifood logo" class="logo">
+                    <img src="resources/img/logo.png" alt="Omnifood logo" class="logo-black">
+                    <ul class="main-nav js--main-nav">
+                        <li><a href="#features">Food delivery</a></li>
+                        <li><a href="#works">How it works</a></li>
+                        <li><a href="#cities">Our cities</a></li>
+                        <li><a href="#plans">Sign up</a></li>
+                    </ul>
+                    <a class="mobile-nav-icon js--nav-icon"><i class="ion-navicon-round"></i></a>
+                </div>
+            </nav>
+            <div class="hero-text-box">
+                <h1>Goodbye junk food.<br>Hello super healthy meals.</h1>
+                <a class="btn btn-full js--scroll-to-plans" href="#">I'm hungry</a>
+                <a class="btn btn-ghost js--scroll-to-start" href="#">Show me more</a>
+            </div>
+            
+        </header>
+        
+        <section class="section-features js--section-features" id="features">
+            <div class="row">
+                <h2>Get food fast &mdash; not fast food</h2>
+                <p class="long-copy">
+                    Hello, we're Omnifood, your new premium food delivery service. We know you're always busy. No time for cooking. So let us take care of that, we're really good at it, we promise!
+                </p>
+            </div>
+            
+            <div class="row js--wp-1">
+                <div class="col span-1-of-4 box">
+                    <i class="ion-ios-infinite-outline icon-big"></i>
+                    <h3>Up to 365 days/year</h3>
+                    <p>
+                        Never cook again! We really mean that. Our subscription plans include up to 365 days/year coverage. You can also choose to order more flexibly if that's your style.
+                    </p>
+                </div>
+                <div class="col span-1-of-4 box">
+                    <i class="ion-ios-stopwatch-outline icon-big"></i>
+                    <h3>Ready in 20 minutes</h3>
+                    <p>
+                        You're only twenty minutes away from your delicious and super healthy meals delivered right to your home. We work with the best chefs in each town to ensure that you're 100% happy.
+                    </p>
+                </div>
+                <div class="col span-1-of-4 box">
+                    <i class="ion-ios-nutrition-outline icon-big"></i>
+                    <h3>100% organic</h3>
+                    <p>
+                        All our vegetables are fresh, organic and local. Animals are raised without added hormones or antibiotics. Good for your health, the environment, and it also tastes better!
+                    </p>
+                </div>
+                <div class="col span-1-of-4 box">
+                    <i class="ion-ios-cart-outline icon-big"></i>
+                    <h3>Order anything</h3>
+                    <p>
+                        We don't limit your creativity, which means you can order whatever you feel like. You can also choose from our menu containing over 100 delicious meals. It's up to you!
+                    </p>
+                </div>
+            </div>   
+        </section>
+        
+        <section class="section-meals">
+            <ul class="meals-showcase clearfix">
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/1.jpg" alt="Korean bibimbap with egg and vegetables">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/2.jpg" alt="Simple italian pizza with cherry tomatoes">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/3.jpg" alt="Chicken breast steak with vegetables">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/4.jpg" alt="Autumn pumpkin soup">
+                    </figure>
+                </li>
             </ul>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <h1 class="hero-title">Evlerinize Enerji Katıyoruz</h1>
-            <p class="hero-text">Modern, hızlı ve cesur tamirat çözümleri.</p>
-            <a href="#services" class="btn">Hizmetleri Gör</a>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="container">
-            <h2>Hakkımızda</h2>
-            <p>20 yıllık deneyimle, ev tamiratı ve dekorasyonda sınırları zorluyoruz. Yenilikçi teknolojiler ve yaratıcı yaklaşımla, evlerinizi dönüştürüyoruz.</p>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="section">
-        <div class="container">
-            <h2>Hizmetlerimiz</h2>
-            <div class="services-grid">
-                <div class="service-card" data-direction="left">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&fit=crop&w=120&h=120" alt="Elektrik Tesisatı" loading="lazy">
-                    <h3>Elektrik Tesisatı</h3>
-                    <p>Enerjik ve güvenli elektrik çözümleri.</p>
+            <ul class="meals-showcase clearfix">
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/5.jpg" alt="Paleo beef steak with vegetables">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/6.jpg" alt="Healthy baguette with egg and vegetables">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/7.jpg" alt="Burger with cheddar and bacon">
+                    </figure>
+                </li>
+                <li>
+                    <figure class="meal-photo">
+                        <img src="resources/img/8.jpg" alt="Granola with cherries and strawberries">
+                    </figure>
+                </li>
+            </ul>
+        </section>
+        
+        
+        <section class="section-steps" id="works">
+            <div class="row">
+                <h2>How it works &mdash; Simple as 1, 2, 3</h2>
+            </div>
+            <div class="row">
+                <div class="col span-1-of-2 steps-box">
+                    <img src="resources/img/app-iPhone.png" alt="Omnifood app on iPhone" class="app-screen js--wp-2">
                 </div>
-                <div class="service-card" data-direction="right">
-                    <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?crop=entropy&fit=crop&w=120&h=120" alt="Boya ve Dekorasyon" loading="lazy">
-                    <h3>Boya ve Dekorasyon</h3>
-                    <p>Cesur renklerle evinizi yeniden tasarlayın.</p>
-                </div>
-                <div class="service-card" data-direction="left">
-                    <img src="https://images.unsplash.com/photo-1581578735769-4d98f6bf8729?crop=entropy&fit=crop&w=120&h=120" alt="Su Tesisatı" loading="lazy">
-                    <h3>Su Tesisatı</h3>
-                    <p>Hızlı ve yenilikçi tesisat onarımı.</p>
-                </div>
-                <div class="service-card" data-direction="right">
-                    <img src="https://images.unsplash.com/photo-1581578735769-4d98f6bf8729?crop=entropy&fit=crop&w=120&h=120" alt="Küçük Onarımlar" loading="lazy">
-                    <h3>Küçük Onarımlar</h3>
-                    <p>Pratik ve modern çözümler.</p>
+                <div class="col span-1-of-2 steps-box">
+                    <div class="works-step clearfix">
+                        <div>1</div>
+                        <p>Choose the subscription plan that best fits your needs and sign up today.</p>
+                    </div>
+                    <div class="works-step clearfix">
+                        <div>2</div>
+                        <p>Order your delicious meal using our mobile app or website. Or you can even call us!</p>
+                    </div>
+                    <div class="works-step clearfix">
+                        <div>3</div>
+                        <p>Enjoy your meal after less than 20 minutes. See you the next time!</p>
+                    </div>
+                    
+                    <a href="#" class="btn-app"><img src="resources/img/download-app.svg" alt="App Store Button"></a>
+                    <a href="#" class="btn-app"><img src="resources/img/download-app-android.png" alt="Play Store Button"></a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="section">
-        <div class="container">
-            <h2>Referanslar</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <p>"Elektrik tesisatımız bir sanat eseri gibi yenilendi!"</p>
-                    <h4>Can B.</h4>
+        </section>
+        
+        <section class="section-cities" id="cities">
+            <div class="row">
+                <h2>We're currently in these cities</h2>
+            </div>
+            <div class="row js--wp-3">
+                <div class="col span-1-of-4 box">
+                    <img src="resources/img/lisbon-3.jpg" alt="Lisbon">
+                    <h3>Lisbon</h3>
+                    <div class="city-feature">
+                        <i class="ion-ios-person icon-small"></i>
+                        1600+ happy eaters
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-ios-star icon-small"></i>
+                        60+ top chefs
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-social-twitter icon-small"></i>
+                        <a href="#">@omnifood_lx</a>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <p>"Boya işlerimiz evimize enerji kattı."</p>
-                    <h4>Ece T.</h4>
+                <div class="col span-1-of-4 box">
+                    <img src="resources/img/san-francisco.jpg" alt="San Francisco">
+                    <h3>San Francisco</h3>
+                    <div class="city-feature">
+                        <i class="ion-ios-person icon-small"></i>
+                        3700+ happy eaters
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-ios-star icon-small"></i>
+                        160+ top chefs
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-social-twitter icon-small"></i>
+                        <a href="#">@omnifood_sf</a>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <p>"Tesisat onarımı hızlı ve yaratıcıydı."</p>
-                    <h4>Deniz K.</h4>
+                <div class="col span-1-of-4 box">
+                    <img src="resources/img/berlin.jpg" alt="Berlin">
+                    <h3>Berlin</h3>
+                    <div class="city-feature">
+                        <i class="ion-ios-person icon-small"></i>
+                        2300+ happy eaters
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-ios-star icon-small"></i>
+                        110+ top chefs
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-social-twitter icon-small"></i>
+                        <a href="#">@omnifood_berlin</a>
+                    </div>
+                </div>
+                <div class="col span-1-of-4 box">
+                    <img src="resources/img/london.jpg" alt="London">
+                    <h3>London</h3>
+                    <div class="city-feature">
+                        <i class="ion-ios-person icon-small"></i>
+                        1200+ happy eaters
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-ios-star icon-small"></i>
+                        50+ top chefs
+                    </div>
+                    <div class="city-feature">
+                        <i class="ion-social-twitter icon-small"></i>
+                        <a href="#">@omnifood_london</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="section">
-        <div class="container">
-            <h2>İletişime Geç</h2>
-            <div class="contact-grid">
-                <form class="contact-form">
-                    <input type="text" placeholder="Adınız" required>
-                    <input type="email" placeholder="E-posta" required>
-                    <textarea placeholder="Mesajınız" required></textarea>
-                    <button type="submit" class="btn">Gönder</button>
+            
+        </section>
+        
+        <section class="section-testimonials">
+            <div class="row">
+                <h2>Our customers can't live without us</h2>
+            </div>
+            <div class="row">
+                <div class="col span-1-of-3">
+                    <blockquote>
+                        Omnifood is just awesome! I just launched a startup which leaves me with no time for cooking, so Omnifood is a life-saver. Now that I got used to it, I couldn't live without my daily meals!
+                        <cite><img src="resources/img/customer-1.jpg" alt="Customer 1 photo">Alberto Duncan</cite>
+                    </blockquote>
+                </div>
+                <div class="col span-1-of-3">
+                    <blockquote>
+                       Inexpensive, healthy and great-tasting meals, delivered right to my home. We have lots of food delivery here in Lisbon, but no one comes even close to Omifood. Me and my family are so in love!
+                        <cite><img src="resources/img/customer-2.jpg" alt="Customer 2 photo">Joana Silva</cite>
+                    </blockquote>
+                </div>
+                <div class="col span-1-of-3">
+                    <blockquote>
+I was looking for a quick and easy food delivery service in San Franciso. I tried a lot of them and ended up with Omnifood. Best food delivery service in the Bay Area. Keep up the great work!
+                    <cite><img src="resources/img/customer-3.jpg" alt="Customer 3 photo">Milton Chapman</cite>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+        
+        
+        <section class="section-plans js--section-plans" id="plans">
+            <div class="row">
+                <h2>Start eating healthy today</h2>
+            </div>
+            <div class="row">
+                <div class="col span-1-of-3">
+                    <div class="plan-box js--wp-4">
+                        <div>
+                            <h3>Premium</h3>
+                            <p class="plan-price">$399 <span>/ month</span></p>
+                            <p class="plan-price-meal">That's only 13.30$ per meal</p>
+                        </div>
+                        <div>
+                            <ul>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>1 meal every day</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Order 24/7</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Access to newest creations</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Free delivery</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a href="#" class="btn btn-full">Sign up now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col span-1-of-3">
+                    <div class="plan-box">
+                        <div>
+                            <h3>Pro</h3>
+                            <p class="plan-price">$149 <span>/ month</span></p>
+                            <p class="plan-price-meal">That's only 14.90$ per meal</p>
+                        </div>
+                        <div>
+                            <ul>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>1 meal 10 days/month</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Order 24/7</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Access to newest creations</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Free delivery</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a href="#" class="btn btn-ghost">Sign up now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col span-1-of-3">
+                    <div class="plan-box">
+                        <div>
+                            <h3>Starter</h3>
+                            <p class="plan-price">19$ <span>/ meal</span></p>
+                            <p class="plan-price-meal">&nbsp;</p>
+                        </div>
+                        <div>
+                            <ul>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>1 meal</li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Order from 8 am to 12 pm</li>
+                                <li><i class="ion-ios-close-empty icon-small"></i></li>
+                                <li><i class="ion-ios-checkmark-empty icon-small"></i>Free delivery</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a href="#" class="btn btn-ghost">Sign up now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section-form">
+            <div class="row">
+                <h2>We're happy to hear from you</h2>
+            </div>
+            <div class="row">
+                <form method="post" action="#" class="contact-form">
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label for="name">Name</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="text" name="name" id="name" placeholder="Your name" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="email" name="email" id="email" placeholder="Your email" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label for="find-us">How did you find us?</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <select name="find-us" id="find-us">
+                                <option value="friends" selected>Friends</option>
+                                <option value="search">Search engine</option>
+                                <option value="ad">Advertisement</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label>Newsletter?</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="checkbox" name="news" id="news" checked> Yes, please
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label>Drop us a line</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <textarea name="message" placeholder="Your message"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col span-1-of-3">
+                            <label>&nbsp;</label>
+                        </div>
+                        <div class="col span-2-of-3">
+                            <input type="submit" value="Send it!">
+                        </div>
+                    </div>
+                    
                 </form>
-                <div class="contact-info">
-                    <p><i class="fas fa-phone"></i> +90 555 123 45 67</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Örnek Mah. 123 Sk. No:4, İstanbul</p>
-                    <p><i class="fas fa-envelope"></i> info@tamirustasi.com</p>
+                
+            </div>
+        </section>
+        
+        <footer>
+            <div class="row">
+                <div class="col span-1-of-2">
+                    <ul class="footer-nav">
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">iOS App</a></li>
+                        <li><a href="#">Android App</a></li>
+                    </ul>
+                </div>
+                <div class="col span-1-of-2">
+                    <ul class="social-links">
+                        <li><a href="#"><i class="ion-social-facebook"></i></a></li>
+                        <li><a href="#"><i class="ion-social-twitter"></i></a></li>
+                        <li><a href="#"><i class="ion-social-googleplus"></i></a></li>
+                        <li><a href="#"><i class="ion-social-instagram"></i></a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>© 2025 Tamir Ustası</p>
-            <div class="social-links">
-                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <div class="row">
+                <p>
+                    Copyright &copy; 2015 by Omnifood. All rights reserved.
+                </p>
             </div>
-        </div>
-    </footer>
-
+        </footer>
+        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/respond/1.4.2/respond.min.js"></script>
+    <script src="//cdn.jsdelivr.net/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.jsdelivr.net/selectivizr/1.0.3b/selectivizr.min.js"></script>
+    <script src="vendors/js/jquery.waypoints.min.js"></script>
+    <script src="resources/js/script.js"></script>
+    
     <script>
-        // Intersection Observer for scroll-based animations
-        const elements = document.querySelectorAll('.section, .service-card, .testimonial-card, .hero-title, .hero-text, .btn');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const direction = entry.target.dataset.direction || 'up';
-                    entry.target.classList.add('visible', direction);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        elements.forEach(element => observer.observe(element));
+      ga('create', 'UA-61026110-2', 'auto');
+      ga('send', 'pageview');
+
     </script>
-</body>
+    
+    </body>  
+    
 </html>
