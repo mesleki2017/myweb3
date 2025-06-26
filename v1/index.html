@@ -88,25 +88,21 @@
             <h2>Hizmetlerimiz</h2>
             <div class="services-grid">
                 <div class="service-card">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Elektrik Tesisatı" loading="lazy">
                     <i class="fas fa-bolt"></i>
                     <h3>Elektrik Tesisatı</h3>
                     <p>Güvenli ve yenilikçi elektrik çözümleri sunuyoruz.</p>
                 </div>
                 <div class="service-card">
-                    <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920" alt="Boya ve Dekorasyon" loading="lazy">
                     <i class="fas fa-paint-roller"></i>
                     <h3>Boya ve Dekorasyon</h3>
                     <p>Evlerinize estetik ve modern bir dokunuş katıyoruz.</p>
                 </div>
                 <div class="service-card">
-                    <img src="https://images.unsplash.com/photo-1581578735769-4d98f6bf8729" alt="Su Tesisatı" loading="lazy">
                     <i class="fas fa-faucet"></i>
                     <h3>Su Tesisatı</h3>
                     <p>Su kaçağı tespiti ve onarımda uzman hizmet.</p>
                 </div>
                 <div class="service-card">
-                    <img src="https://images.unsplash.com/photo-1581578735769-4d98f6bf8729" alt="Küçük Onarımlar" loading="lazy">
                     <i class="fas fa-tools"></i>
                     <h3>Küçük Onarımlar</h3>
                     <p>Evdeki küçük işler için hızlı ve etkili çözümler.</p>
@@ -173,20 +169,5 @@
             </ul>
         </div>
     </footer>
-
-    <script>
-        // Intersection Observer for scroll-based animations
-        const sections = document.querySelectorAll('.section, .service-card, .testimonial-card');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); // Animasyon bir kez oynasın
-                }
-            });
-        }, { threshold: 0.2 });
-
-        sections.forEach(section => observer.observe(section));
-    </script>
 </body>
 </html>
